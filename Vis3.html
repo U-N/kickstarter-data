@@ -1,0 +1,138 @@
+<html>
+<head>
+    <title> Colm Ryan - Sample Assignment</title>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/vega/3.0.8/vega.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.3/vega-lite.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/vega-embed/3.0.0-rc7/vega-embed.js"></script>
+   <style>
+       body {
+             font-family: sans-serif;
+           }
+    
+           .vega-actions a {
+             padding: 0.2em;
+           }
+    </style>
+</head>
+<body>
+    <table style="width: 850px; margin-left: auto; margin-right: auto;" cellspacing="5" cellpadding="5">
+    <tbody>
+    <tr>
+    <td style="width: 200px; vertical-align: top;"><strong>Name:&nbsp;</strong></td>
+    <td style="vertical-align: top;">Colm Ryan</td>
+    </tr>
+    <tr>
+    <td style="vertical-align: top;"><strong>Student Number:</strong></td>
+    <td style="vertical-align: top;">012345678</td>
+    </tr>
+    <tr>
+    <td style="vertical-align: top;"><strong>Dataset description:</strong></td>
+    <td style="vertical-align: top;">
+    <p><a href="https://www.theguardian.com/sport/datablog/2012/aug/07/olympics-2012-athletes-age-weight-height" target="_blank" rel="noopener">Guardian Olympic Athletes Dataset</a>.</p>
+    <p>This data set contains physical attributes of athletes who competed in the 2012 Olympics. In addition to height, weight and age, this dataset provides information on the athletes' nationalities, the sports they participated in, and any medals won.</p>
+    </td>
+    </tr>
+    <tr>
+    <td style="vertical-align: top;"><strong>Initial questions</strong></td>
+    <td style="vertical-align: top;">How do the height and weight of olympic athletes vary across sports? What is the relationship between height and weight?</td>
+    </tr>
+    </tbody>
+    </table>
+    <hr />
+    <div align="center"><b> Height and Weight of Male Judo Competitors</b></div>
+    <br/>
+  <div id="vis" align="center"></div><br/>
+    <hr />
+<table style="width: 850px; margin-left: auto; margin-right: auto;" cellspacing="5" cellpadding="5">
+<tbody>
+<tr>
+<td style="width: 200px; vertical-align: top;"><strong>Description:&nbsp;</strong></td>
+<td style="vertical-align: top;">These two strip charts show the height and weight of male athletes competing in different weight classes. Each circle represents an individual athlete, darker circles indicate multiple athletes at that height/weight. </td>
+</tr>
+<tr>
+<td style="vertical-align: top;"><strong>Insight:</strong></td>
+<td style="vertical-align: top;"> The chart for weight shows that for most weight classes athletes have a very narrow weight range. This is to be expected - athletes want to weigh as much as possible while staying under the regulated weight. In contrast for the +100kg class there is huge variation - the heaviest athlete in this class weighs more than twice the lightest athlete in this class. <p/>The chart for height shows much more variation for all weight classes - with some athletes in the lower weight classes taller than those in the +100kg class (e.g. at 181cm Colin Oates in the -66kg range is taller than many athletes in heavier classes). </td>
+</tr>
+<tr>
+<td style="vertical-align: top;"><strong>Design considerations</strong></td>
+<td style="vertical-align: top;"> I have used strip charts as position along a common axis is the most effective means of conveying quantitative information. By grouping the athletes according to weight class and sorting according to the average weight within each class, clear trends become apparent. <p/> A limitation of this plot is that it suffers from overplotting - many points are drawn on top of each other. To reduce the impact of this I have used opacity - darker circles indicate more athletes located at a specific height or weight. There are some limitations of this - notably it is impossible to tell exactly how many athletes are at one particular weight, but the emphasised trend is still very apparent (athletes in each class have a very narrow weight range). <p/>
+Alternative visualisations of distributions (box plots, histograms) could make a similar point but there are two few data points to use them effectively. Binning the data would reduce overplotting, but would lessen the impact of the point being made as all athletes would from a single weight class would fall into a single bin.
+</td> </tr>
+<tr>
+<td style="width: 200px; vertical-align: top;"><strong>Data filtering and transformation:&nbsp;</strong></td>
+<td style="vertical-align: top;">Only male athletes competing in Judo sports with recorded heights and weights greater than zero are shown. </td>
+</tr>
+</tbody>
+</table>
+  <script type="text/javascript">
+    var yourVlSpec =  {
+   "$schema":"https://vega.github.io/schema/vega-lite/v2.json",
+   "data":{
+      "url":"https://raw.githubusercontent.com/colmr/vis_class/master/London2012Vega.csv",
+      "format":{
+         "type":"csv"
+      }
+   },
+   "transform":[
+      {
+         "filter":"datum.Weight > 0"
+      },
+      {
+         "filter":"datum.Height > 0"
+      },
+      {
+         "filter":"datum.Sport == 'Judo'"
+      },
+      {
+         "filter":"datum.Sex == 'M'"
+      }
+   ],
+   "repeat":{
+      "column":[
+         "Height",
+         "Weight"
+      ]
+   },
+   "spec":{
+      "mark":"circle",
+      "width":300,
+      "encoding":{
+         "y":{
+            "field":"Event",
+            "type":"nominal",
+            "sort":{
+               "op":"mean",
+               "field":"Weight",
+               "order":"descending"
+            },
+            "axis":{
+               "title":null
+            }
+         },
+         "x":{
+            "field":{
+               "repeat":"column"
+            },
+            "type":"quantitative",
+            "scale":{
+               "zero":false
+            }
+         },
+         "tooltip":{
+            "field":"Name",
+            "type":"nominal"
+         },
+         "color":{
+            "value":"DarkSlateBlue"
+         },
+         "opacity":{
+            "value":0.2
+         }
+      }
+   }
+}
+
+        vegaEmbed("#vis", yourVlSpec);
+  </script>
+</body>
+</html>
